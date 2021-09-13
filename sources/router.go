@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"path/filepath"
 	"strings"
 	"time"
 
@@ -25,7 +24,7 @@ func SetupRoutes() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", Get).Methods(http.MethodGet)
 	api := r.PathPrefix("/api/v1").Subrouter()
-	api.HandleFunc("/decrypt", decryptFile).Methods(http.MethodPost)
+	//api.HandleFunc("/decrypt", decryptFile).Methods(http.MethodPost)
 	api.HandleFunc("/upload", UploadFile).Methods(http.MethodPost)
 	api.HandleFunc("/file/{fileID}", GetFile).Methods(http.MethodGet)
 	api.HandleFunc("/searchFile", SearchFile).Methods(http.MethodGet)
@@ -51,55 +50,56 @@ func Get(w http.ResponseWriter, r *http.Request) {
 	//w.Write([]byte(`{"message": "get called"}`))
 	tpl.ExecuteTemplate(w, "index.html", nil) //Read about nginx
 }
-func decryptFile(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Decrypting file\n")
-	if r.Method != "POST" {
-		http.Redirect(w, r, "/", http.StatusSeeOther)
-		return
-	}
 
-	r.ParseMultipartForm(10 << 20) // Max of 10 megabyte files
+// func decryptFile(w http.ResponseWriter, r *http.Request) {
+// 	fmt.Fprintf(w, "Decrypting file\n")
+// 	if r.Method != "POST" {
+// 		http.Redirect(w, r, "/", http.StatusSeeOther)
+// 		return
+// 	}
 
-	//retrieve file from posted form-data
-	file, handler, err := r.FormFile("decrImage")
-	if err != nil {
-		fmt.Println("Error Retrieving file from form-data")
-		fmt.Println(err)
-		return
-	}
-	defer file.Close()
-	fmt.Printf("Uploaded File: %+v\n", handler.Filename)
-	fmt.Printf("File Size: %+v\n", handler.Size)
-	fmt.Printf("MIME Header: %+v\n", handler.Header)
+// 	r.ParseMultipartForm(10 << 20) // Max of 10 megabyte files
 
-	extension := filepath.Ext(handler.Filename)
+// 	//retrieve file from posted form-data
+// 	file, handler, err := r.FormFile("decrImage")
+// 	if err != nil {
+// 		fmt.Println("Error Retrieving file from form-data")
+// 		fmt.Println(err)
+// 		return
+// 	}
+// 	defer file.Close()
+// 	fmt.Printf("Uploaded File: %+v\n", handler.Filename)
+// 	fmt.Printf("File Size: %+v\n", handler.Size)
+// 	fmt.Printf("MIME Header: %+v\n", handler.Header)
 
-	cipherBytes, err := ioutil.ReadAll(file)
-	if err != nil {
-		fmt.Println("ERROR!")
-		fmt.Println(err)
-	}
+// 	extension := filepath.Ext(handler.Filename)
 
-	//Decrypting fileBytes----------
-	db := ConnectToDb()
-	defer db.Close()
+// 	cipherBytes, err := ioutil.ReadAll(file)
+// 	if err != nil {
+// 		fmt.Println("ERROR!")
+// 		fmt.Println(err)
+// 	}
 
-	fileId := strings.Split(strings.Split(handler.Filename, ".")[0], "-")[1]
-	key, err := GetKey(db, fileId)
-	if err != nil {
-		fmt.Fprintf(w, "Invalid file id\n")
-		fmt.Fprintf(w, "Redirecting to home\n")
-		http.Redirect(w, r, "localhost:8080", http.StatusSeeOther)
-	}
-	//key := []byte("passphrasewhichneedstobe32bytes!")
-	decryptedBytes := DecryptBytes(cipherBytes, key)
+// 	//Decrypting fileBytes----------
+// 	db := ConnectToDb()
+// 	defer db.Close()
 
-	WriteFileOnServer("decrypted-images", "decrypt-", extension, decryptedBytes)
+// 	fileId := strings.Split(strings.Split(handler.Filename, ".")[0], "-")[1]
+// 	key, err := GetKey(db, fileId)
+// 	if err != nil {
+// 		fmt.Fprintf(w, "Invalid file id\n")
+// 		fmt.Fprintf(w, "Redirecting to home\n")
+// 		http.Redirect(w, r, "localhost:8080", http.StatusSeeOther)
+// 	}
+// 	//key := []byte("passphrasewhichneedstobe32bytes!")
+// 	decryptedBytes := DecryptBytes(cipherBytes, key)
 
-	//outputFile.Write(decryptedBytes)
+// 	WriteFileOnServer("decrypted-images", "decrypt-", extension, decryptedBytes)
 
-	fmt.Fprintf(w, "Successfully decrypted file\n")
-}
+// 	//outputFile.Write(decryptedBytes)
+
+// 	fmt.Fprintf(w, "Successfully decrypted file\n")
+// }
 
 func UploadFile(w http.ResponseWriter, r *http.Request) {
 	//fmt.Fprintf(w, "Uploading file\n")
