@@ -1,0 +1,11 @@
+#mainHeading {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+#mainImage {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}

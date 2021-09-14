@@ -1,0 +1,67 @@
+<!Doctype html>
+<html>
+<head>
+    <title>Home</title>
+    <meta charset = "UTF-8">
+    <!--Bootstrap-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles/mainStyle.css">
+    <link rel="stylesheet" href="styles/fileNotFoundStyle.css">
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+</head>
+<body>
+
+<div class="container" id="pageContainer">
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light" id="myNavbarId">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="/">
+            <img src="images/encrypt-icon.jpg" width="50px" height="50px">
+            File encryptor
+          </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="/">Home</a>
+              </li>
+            </ul>
+            <form action="/api/v1/searchFile" class="d-flex" method="GET">
+              <input class="form-control me-2" type="search" placeholder="Enter a file ID" aria-label="Search" name="fileId">
+              <button class="btn btn-warning btn-outline-dark" type="submit">Search</button>
+            </form>
+          </div>
+        </div>
+      </nav>
+</header>
+<div class="container" id="contentContainer">
+  <div class="jumbotron">
+  <div class="row">
+    <div class="col-md-12">
+        <h1 id="mainHeading"><b>Sorry, we can't find your File</b></h1>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+        <img src="images/404.png" id="mainImage">
+    </div>
+  </div>
+</div>
+
+<footer>
+  <hr>
+  <p id="footerText"><b>Panayot Marinov</b>&nbsp;&nbsp;All rights reserved®</p>
+</footer>
+</div>
+</div>
+
+
+
+<!--Bootstrap JS-->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js" integrity="sha384-W8fXfP3gkOKtndU4JGtKDvXbO53Wy8SZCQHczT5FMiiqmQfUpWbYdTil/SxwZgAN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.min.js" integrity="sha384-skAcpIdS7UcVUC05LJ9Dxay8AXcDYfBJqt1CJ85S/CFujBsIzCIv+l9liuYLaMQ/" crossorigin="anonymous"></script>
+</body>
