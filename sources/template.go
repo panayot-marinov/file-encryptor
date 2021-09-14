@@ -2,10 +2,15 @@ package sources
 
 import (
 	"embed"
+	"fmt"
 	"html/template"
+	"os"
 )
 
 var tpl *template.Template
+
+var serverHost string
+var serverPort string
 
 //go:embed templates/*
 var templatesData embed.FS
@@ -28,6 +33,11 @@ func init() {
 	// }
 
 	tpl = template.Must(template.ParseFS(templatesData, "templates/*.html"))
+	serverHost = os.Getenv("SERVER_HOST")
+	serverPort = os.Getenv("SERVER_PORT")
+
+	fmt.Println("HOST = ", serverHost)
+	fmt.Println("PORT = ", serverPort)
 
 	//TODO: See articles about golang embed static files
 	//tpl = template.Must(template.ParseGlob("templates/*.html"))

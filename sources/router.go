@@ -192,7 +192,8 @@ func UploadFile(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Successful upload to postgre")
 	//------------------------------------
 
-	fileUrl := "http://localhost:8080/api/v1/download/" + fileId
+	fileUrl := "http://" + serverHost + ":" + serverPort + "/api/v1/download/" + fileId
+	//fileUrl := "http://localhost:8080/api/v1/download/" + fileId
 	w.Header().Set("Content-type", "text/html")
 	w.WriteHeader(http.StatusOK)
 	tpl.ExecuteTemplate(w, "fileurl.html", fileUrl)
@@ -339,8 +340,9 @@ func SearchFile(w http.ResponseWriter, r *http.Request) {
 
 	fileId := r.Form.Get("fileId")
 	fmt.Println("fileid= " + fileId)
-	destUrl := "http://localhost:8080" + "/api/v1/download/" + fileId
-	fmt.Println("destUrl= " + destUrl)
+	destUrl := "http://" + serverHost + ":" + serverPort + "/api/v1/download/" + fileId
+	//destUrl := "http://localhost:8080" + "/api/v1/download/" + fileId
+	//fmt.Println("destUrl= " + destUrl)
 	//http.Redirect(w, r, destUrl, http.StatusOK)
 	http.Redirect(w, r, destUrl, http.StatusFound)
 }
@@ -390,8 +392,6 @@ func DonwloadFile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println("time = ", string(uploadDateBytes))
-
 	layout := time.RFC3339
 	uploadDateTimestamp, err := time.Parse(layout, string(uploadDateBytes))
 	if err != nil {
@@ -408,5 +408,6 @@ func DonwloadFile(w http.ResponseWriter, r *http.Request) {
 func parseError(err error, w http.ResponseWriter, r *http.Request, message string) {
 	//Alert user message
 	fmt.Println("ERROR!" + message)
-	http.Redirect(w, r, "localhost:8080", http.StatusFound)
+	url := serverHost + ":" + serverPort
+	http.Redirect(w, r, url, http.StatusFound)
 }
