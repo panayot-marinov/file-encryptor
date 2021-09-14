@@ -56,6 +56,15 @@ func getData(id int) Upload { //Test function
 }
 
 func main() {
+	password := "secret"
+	hash, _ := sources.HashPassword(password) // ignore error for the sake of simplicity
+
+	fmt.Println("Password:", password)
+	fmt.Println("Hash:    ", hash)
+
+	match := sources.CheckPasswordHash(password, hash)
+	fmt.Println("Match:   ", match)
+
 	//os.Setenv("CONNSTR", "user=postgres password=parolazabaza host=127.0.0.1 port=5432 dbname=MainDB connect_timeout=20 sslmode=disable")
 
 	// album := getData(1)

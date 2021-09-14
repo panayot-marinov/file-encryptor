@@ -112,6 +112,7 @@ func UploadFile(w http.ResponseWriter, r *http.Request) {
 	r.ParseMultipartForm(10 << 20) // Max of 10 megabyte files
 
 	//retrieve file from posted form-data
+	//Get file
 	file, handler, err := r.FormFile("uplImage")
 	if err != nil {
 		fmt.Println("Error Retrieving file from form-data")
@@ -124,6 +125,12 @@ func UploadFile(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("File Size: %+v\n", handler.Size)
 	fmt.Printf("MIME Header: %+v\n", handler.Header)
 
+	//Get password
+	password := r.Form.Get("filePassword")
+	hasPassword := (len(password) > 0)
+	fmt.Println("filePassword=" + password)
+	fmt.Println(len(password))
+
 	//extension := filepath.Ext(handler.Filename)
 
 	fileBytes, err := ioutil.ReadAll(file)
@@ -132,7 +139,20 @@ func UploadFile(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//key := []byte("passphrasewhichneedstobe32bytes!")
-	key := CreateUuidKey()
+	//key = CreateUuidKey()
+
+	var hash []byte
+	var key []byte
+	if hasPassword {
+		hashStr, _ := HashPassword(password)
+		hash = []byte(hashStr)
+		key = hash[:32]
+	} else {
+		key = CreateUuidKey()
+		hashStr, _ := HashPassword(string(key))
+		hash = []byte(hashStr)
+		key = hash[:32]
+	}
 
 	//Encrypting fileBytes----------
 	encryptedBytes := EncryptBytes(fileBytes, key)
@@ -173,13 +193,13 @@ func UploadFile(w http.ResponseWriter, r *http.Request) {
 
 	//fileId := strings.Split(strings.Split(outputFileName, ".")[0], "-")[2]
 	fileId := string(CreateUuidKey())
-	query := "INSERT INTO \"Uploads\" (file_id, orig_file_name, encryption_key, upload_date, mongodb_id) VALUES ($1, $2, $3, $4, $5)"
+	query := "INSERT INTO \"Uploads\" (file_id, orig_file_name, encryption_key, upload_date, mongodb_id, has_password) VALUES ($1, $2, $3, $4, $5, $6)"
 
 	//Get current time
 	var datetime = time.Now()
 	dt := datetime.Format(time.RFC3339)
 
-	_, err = db.Exec(query, fileId, handler.Filename, key, dt, mongoObjectId)
+	_, err = db.Exec(query, fileId, handler.Filename, hash, dt, mongoObjectId, hasPassword)
 	if err != nil {
 		fmt.Println("Error executing insert statement")
 		panic(err)
@@ -237,6 +257,9 @@ func GetFile(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		parseError(err, w, r, "Cannot get encryption_key")
 		return
+	}
+	if len(key) > 32 {
+		key = key[:32]
 	}
 
 	mongoDbId, err := GetMongoDbId(db, fileId)

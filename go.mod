@@ -12,6 +12,8 @@ require (
 	github.com/microcosm-cc/bluemonday v1.0.15 // indirect
 	github.com/qor/qor v1.2.0 // indirect
 	github.com/qor/redirect_back v0.0.0-20170907030740-b4161ed6f848 // indirect
+	github.com/wuriyanto48/go-pbkdf2 v0.0.1 // indirect
 	go.mongodb.org/mongo-driver v1.7.2 // indirect
+	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5 // indirect
 	golang.org/x/net v0.0.0-20210716203947-853a461950ff // indirect
 )
