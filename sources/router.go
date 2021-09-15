@@ -192,7 +192,13 @@ func UploadFile(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Successful upload to postgre")
 	//------------------------------------
 
-	fileUrl := "http://" + serverHost + ":" + serverPort + "/api/v1/download/" + fileId
+	var fileUrl string
+	if serverPort == "80" {
+		fileUrl = "http://" + serverHost + "/api/v1/download/" + fileId
+	} else {
+		fileUrl = "http://" + serverHost + ":" + serverPort + "/api/v1/download/" + fileId
+	}
+
 	//fileUrl := "http://localhost:8080/api/v1/download/" + fileId
 	w.Header().Set("Content-type", "text/html")
 	w.WriteHeader(http.StatusOK)
@@ -340,7 +346,13 @@ func SearchFile(w http.ResponseWriter, r *http.Request) {
 
 	fileId := r.Form.Get("fileId")
 	fmt.Println("fileid= " + fileId)
-	destUrl := "http://" + serverHost + ":" + serverPort + "/api/v1/download/" + fileId
+	var destUrl string
+
+	if serverPort == "80" {
+		destUrl = "http://" + serverHost + "/api/v1/download/" + fileId
+	} else {
+		destUrl = "http://" + serverHost + ":" + serverPort + "/api/v1/download/" + fileId
+	}
 	//destUrl := "http://localhost:8080" + "/api/v1/download/" + fileId
 	//fmt.Println("destUrl= " + destUrl)
 	//http.Redirect(w, r, destUrl, http.StatusOK)
@@ -408,6 +420,12 @@ func DonwloadFile(w http.ResponseWriter, r *http.Request) {
 func parseError(err error, w http.ResponseWriter, r *http.Request, message string) {
 	//Alert user message
 	fmt.Println("ERROR!" + message)
-	url := serverHost + ":" + serverPort
+	var url string
+
+	if serverPort == "80" {
+		url = serverHost
+	} else {
+		url = serverHost + ":" + serverPort
+	}
 	http.Redirect(w, r, url, http.StatusFound)
 }
